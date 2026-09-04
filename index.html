@@ -1,710 +1,1787 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>LogicNest · Creator Hub</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#05070a;--glass:rgba(12,17,23,.68);--line:rgba(130,255,220,.16);--mint:#70f5d2;--text:#e9fffa;--muted:#78918d}
-html,body{width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,sans-serif}
-button{font:inherit}
-a{text-decoration:none}
-#space{position:fixed;inset:0;width:100%;height:100%;z-index:0}
-.vignette{position:fixed;inset:0;pointer-events:none;z-index:2;background:radial-gradient(circle at 52% 44%,transparent 16%,rgba(0,0,0,.08) 42%,rgba(0,0,0,.32) 72%,rgba(0,0,0,.88) 100%)}
-.atmosphere{position:fixed;inset:-20%;pointer-events:none;z-index:1;opacity:.5;background:conic-gradient(from 210deg at 50% 50%,transparent 0 18%,rgba(65,190,175,.025) 26%,transparent 34% 63%,rgba(95,180,255,.018) 72%,transparent 80%);animation:atmo 22s linear infinite}
-.noise{position:fixed;inset:0;pointer-events:none;z-index:3;opacity:.035;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.65'/%3E%3C/svg%3E")}
-@keyframes atmo{to{transform:rotate(360deg)}}
-.ui{position:relative;z-index:4;height:100%;pointer-events:none}
-.top{position:absolute;left:34px;right:34px;top:25px;display:flex;align-items:center;justify-content:space-between}
-.logo{pointer-events:auto;letter-spacing:.16em;font-weight:800;font-size:15px}
-.logo span{color:var(--mint)}
-.status{pointer-events:auto;color:#8ca7a1;font-size:11px;letter-spacing:.14em;text-transform:uppercase}
-.status i{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--mint);box-shadow:0 0 15px var(--mint);margin-right:7px}
-.hero{position:absolute;left:7vw;top:50%;transform:translateY(-50%);max-width:560px}
-.kicker{color:var(--mint);font-size:11px;letter-spacing:.28em;text-transform:uppercase;margin-bottom:18px}
-h1{font-size:clamp(48px,7vw,92px);line-height:.88;letter-spacing:-.065em}
-h1 em{font-style:normal;color:transparent;-webkit-text-stroke:1px rgba(232,255,249,.7)}
-.sub{margin-top:24px;max-width:500px;color:#91a8a4;line-height:1.65;font-size:15px}
-.actions{display:flex;gap:10px;margin-top:27px;pointer-events:auto}
-.btn{cursor:pointer;border:1px solid rgba(112,245,210,.25);background:rgba(10,19,21,.55);backdrop-filter:blur(14px);color:#eafff9;padding:12px 18px;border-radius:10px;transition:.2s}
-.btn:hover{border-color:var(--mint);box-shadow:0 0 28px rgba(112,245,210,.12);transform:translateY(-2px)}
-.btn.primary{background:var(--mint);color:#06110e;border-color:var(--mint);font-weight:800}
-.opensource-badges{display:flex;gap:8px;margin-top:20px;flex-wrap:wrap;max-width:600px}
-.opensource-badges a{color:#8da5a1;font-size:10px;text-decoration:none;border:1px solid rgba(112,245,210,.15);padding:7px 11px;border-radius:20px;transition:.2s;pointer-events:auto}
-.opensource-badges a:hover{border-color:var(--mint);color:var(--mint);transform:translateY(-2px)}
-.scene{position:absolute;right:7vw;top:50%;width:420px;height:420px;transform:translateY(-50%);perspective:1000px}
-.orb{position:absolute;left:50%;top:50%;width:180px;height:180px;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 34% 28%,#d7fff4 0 3%,#54d6ba 10%,#0d3935 42%,#061012 72%);box-shadow:0 0 45px rgba(112,245,210,.3),inset -25px -25px 50px #020607;animation:float 5s ease-in-out infinite}
-.ring{position:absolute;left:50%;top:50%;border:1px solid rgba(112,245,210,.35);border-radius:50%;transform-style:preserve-3d}
-.r1{width:300px;height:100px;transform:translate(-50%,-50%) rotateX(65deg);animation:spin 12s linear infinite}
-.r2{width:350px;height:120px;transform:translate(-50%,-50%) rotateX(65deg) rotateZ(55deg);animation:spin 16s linear infinite reverse}
-.r3{width:260px;height:260px;transform:translate(-50%,-50%) rotateY(65deg);animation:spin 18s linear infinite}
-.card{position:absolute;width:185px;padding:15px;background:linear-gradient(145deg,rgba(18,31,34,.8),rgba(5,10,13,.72));border:1px solid rgba(112,245,210,.22);border-radius:14px;backdrop-filter:blur(12px);box-shadow:0 20px 60px rgba(0,0,0,.45);transition:.25s;cursor:pointer}
-.card:hover{border-color:var(--mint);transform:translateY(-6px) scale(1.03)}
-.c1{right:-15px;top:35px;transform:rotateY(-14deg) rotateZ(4deg)}
-.c2{left:-35px;bottom:42px;transform:rotateY(15deg) rotateZ(-4deg)}
-.card b{font-size:14px}
-.card small{display:block;color:#6f8985;margin-top:7px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
-.card .line{height:2px;background:linear-gradient(90deg,var(--mint),transparent);margin-top:13px}
-.bottom{position:absolute;left:34px;right:34px;bottom:25px;display:flex;justify-content:space-between;align-items:end}
-.hint{color:#526a66;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
-.nav{display:flex;gap:8px;pointer-events:auto}
-.nav button{cursor:pointer;color:#8da5a1;background:transparent;border:1px solid rgba(255,255,255,.08);padding:9px 13px;border-radius:9px}
-.nav button:hover{color:#fff;border-color:var(--line)}
-.panel{position:fixed;inset:0;z-index:8;background:rgba(2,5,7,.7);backdrop-filter:blur(18px);display:none;align-items:center;justify-content:center;padding:24px}
-.panel.open{display:flex}
-.panelbox{width:min(980px,95vw);max-height:86vh;overflow:auto;border:1px solid var(--line);border-radius:22px;background:rgba(8,13,17,.9);padding:28px;box-shadow:0 30px 100px #000}
-.panelhead{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
-.panelhead h2{font-size:24px}
-.close{cursor:pointer;background:none;border:0;color:#78918d;font-size:25px}
-.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.category-title{grid-column:1/-1;color:var(--mint);font-size:12px;letter-spacing:.2em;text-transform:uppercase;margin:14px 0 3px;padding:9px 0;border-bottom:1px solid rgba(112,245,210,.1)}
-.project{padding:19px;border:1px solid rgba(255,255,255,.08);border-radius:15px;background:rgba(255,255,255,.025);cursor:pointer;transition:.2s}
-.project:hover{border-color:var(--mint);transform:translateY(-3px)}
-.project h3{margin-bottom:7px;font-size:16px}
-.project p{color:#718783;font-size:13px;line-height:1.5}
-.project-meta{display:flex;gap:7px;flex-wrap:wrap;margin-top:13px}
-.tag{color:var(--mint);font-size:9px;letter-spacing:.15em;text-transform:uppercase;border:1px solid rgba(112,245,210,.12);padding:5px 8px;border-radius:6px}
-.role{color:#8da5a1;font-size:9px;letter-spacing:.12em;text-transform:uppercase;border:1px solid rgba(255,255,255,.08);padding:5px 8px;border-radius:6px}
-.community{border-color:rgba(112,245,210,.12)}
-.community .role{color:var(--mint)}
-.about-grid{display:grid;grid-template-columns:1.6fr .7fr .7fr;gap:14px;align-items:stretch}
-.about-grid>div:first-child,.stat{border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:22px;background:rgba(255,255,255,.025)}
-.eyebrow{font:9px monospace;color:var(--mint);letter-spacing:.2em}
-.aboutbox h3{font-size:28px;margin:12px 0}
-.aboutbox p{color:#79908c;line-height:1.65;font-size:13px}
-.stat{display:flex;flex-direction:column;justify-content:center}
-.stat strong{font-size:34px;color:#d9fff6}
-.stat span{font:9px monospace;letter-spacing:.15em;color:#607b75;margin-top:5px}
-.community-links,.working-on{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-.community-links a,.working-on span{color:var(--mint);border:1px solid rgba(112,245,210,.2);padding:6px 12px;border-radius:8px;font-size:11px;transition:.2s}
-.community-links a:hover{background:rgba(112,245,210,.1);transform:translateY(-2px)}
-.working-on span{color:#8da5a1;background:rgba(112,245,210,.05)}
-.command-line{display:flex;gap:8px;margin-top:18px;border:1px solid rgba(112,245,210,.14);padding:11px;border-radius:10px;background:#05090b}
-.command-line span{color:var(--mint);font-family:monospace}
-.command-line input{flex:1;background:transparent;border:0;outline:0;color:#eafff9;font-family:monospace}
-.terminal-output{font-family:monospace;font-size:12px;line-height:1.7;color:#8ba7a2;max-height:390px;overflow:auto;padding:16px;background:#030607;border:1px solid rgba(255,255,255,.05);border-radius:12px}
-.terminal-output .ok{color:#70f5d2}
-.terminal-output .err{color:#ff8b8b}
-.terminal-output .dim{color:#49615d}
-.floor{position:absolute;left:50%;top:76%;width:460px;height:180px;transform:translate(-50%,-50%) rotateX(68deg);background:linear-gradient(rgba(112,245,210,.08) 1px,transparent 1px),linear-gradient(90deg,rgba(112,245,210,.08) 1px,transparent 1px);background-size:28px 28px;mask-image:radial-gradient(ellipse,black 20%,transparent 72%);opacity:.7}
-.gridglow{position:absolute;left:50%;top:79%;width:300px;height:50px;transform:translate(-50%,-50%);background:rgba(112,245,210,.18);filter:blur(25px);border-radius:50%}
-.beam{position:absolute;left:50%;top:50%;width:2px;height:340px;background:linear-gradient(transparent,rgba(112,245,210,.35),transparent);transform-origin:center;opacity:.5}
-.b1{transform:rotate(36deg)}
-.b2{transform:rotate(-36deg)}
-.screen{position:absolute;left:50%;top:50%;width:150px;height:105px;transform:translate(-50%,-50%) translateZ(45px) rotateY(-8deg);border:1px solid rgba(112,245,210,.28);border-radius:9px;background:linear-gradient(145deg,rgba(8,19,21,.94),rgba(2,7,9,.86));box-shadow:0 0 35px rgba(112,245,210,.1),inset 0 0 25px rgba(112,245,210,.05);padding:10px;overflow:hidden}
-.screen-top{display:flex;justify-content:space-between;color:#58746f;font:7px monospace;letter-spacing:.1em}
-.screen-top span:last-child{color:var(--mint)}
-.screen-big{font:700 48px monospace;line-height:1;margin-top:13px;color:#b8fff0;text-shadow:0 0 18px rgba(112,245,210,.4)}
-.screen-small{font:7px monospace;letter-spacing:.16em;color:#5b7772}
-.scan{position:absolute;left:0;right:0;height:1px;background:rgba(112,245,210,.5);box-shadow:0 0 8px var(--mint);animation:scan 3s linear infinite}
-.portal{position:absolute;width:80px;height:80px;border-radius:50%;border:1px solid rgba(112,245,210,.4);box-shadow:0 0 22px rgba(112,245,210,.13),inset 0 0 18px rgba(112,245,210,.08);display:grid;place-items:center;color:#9de9d7;font:700 9px monospace;letter-spacing:.15em;cursor:pointer;transition:.25s;animation:pulsePortal 2.8s ease-in-out infinite}
-.portal:hover{transform:scale(1.12);border-color:var(--mint);box-shadow:0 0 40px rgba(112,245,210,.25)}
-.p1{left:5%;top:28%;transform:rotateY(20deg)}
-.p2{right:4%;bottom:20%;transform:rotateY(-20deg)}
-.scene:before{content:"";position:absolute;inset:-40px;border:1px solid rgba(112,245,210,.035);border-radius:50%;transform:rotateX(72deg);box-shadow:0 0 80px rgba(112,245,210,.025);pointer-events:none}
-.cube{position:absolute;width:26px;height:26px;border:1px solid rgba(112,245,210,.24);background:rgba(112,245,210,.025);transform-style:preserve-3d;animation:cubefloat 7s ease-in-out infinite}
-.cube:before,.cube:after{content:"";position:absolute;inset:0;border:1px solid rgba(112,245,210,.13);transform:translateZ(26px)}
-.cube:after{transform:rotateY(90deg) translateZ(13px)}
-.cube-a{left:17%;top:18%;animation-delay:-1s}
-.cube-b{right:17%;top:63%;width:17px;height:17px;animation-delay:-4s}
-.cube-c{left:36%;bottom:7%;width:12px;height:12px;animation-delay:-2s}
-.data-orbit{position:absolute;left:50%;top:50%;border:1px dashed rgba(112,245,210,.12);border-radius:50%;transform-style:preserve-3d;animation:dataSpin 11s linear infinite}
-.data-orbit i{position:absolute;width:5px;height:5px;background:var(--mint);border-radius:50%;box-shadow:0 0 12px var(--mint)}
-.do1{width:390px;height:140px;transform:translate(-50%,-50%) rotateX(72deg)}
-.do1 i:nth-child(1){left:10%;top:47%}
-.do1 i:nth-child(2){left:48%;top:2%}
-.do1 i:nth-child(3){right:8%;top:51%}
-.do2{width:330px;height:330px;transform:translate(-50%,-50%) rotateY(70deg);animation-duration:15s;animation-direction:reverse}
-.do2 i:nth-child(1){left:4%;top:47%}
-.do2 i:nth-child(2){right:4%;top:47%}
-.mini-label{position:absolute;color:#52706a;font:8px monospace;letter-spacing:.17em;padding:5px 7px;border-left:1px solid rgba(112,245,210,.28);background:rgba(4,10,11,.35);backdrop-filter:blur(5px)}
-.ml1{left:4%;top:45%}
-.ml2{right:1%;top:32%}
-.ml3{right:9%;bottom:6%}
-@keyframes float{50%{transform:translate(-50%,-54%) scale(1.03)}}
-@keyframes spin{to{transform:translate(-50%,-50%) rotateX(65deg) rotateZ(415deg)}}
-@keyframes scan{0%{top:-2px}100%{top:110px}}
-@keyframes pulsePortal{50%{box-shadow:0 0 36px rgba(112,245,210,.22),inset 0 0 22px rgba(112,245,210,.1)}}
-@keyframes cubefloat{0%,100%{transform:translate3d(0,0,0) rotateX(0) rotateY(0)}50%{transform:translate3d(10px,-18px,30px) rotateX(110deg) rotateY(140deg)}}
-@keyframes dataSpin{to{transform:translate(-50%,-50%) rotateX(72deg) rotateZ(360deg)}}
-@media(max-width:850px){
-.scene{right:2vw;opacity:.32}
-.mini-label,.cube,.data-orbit{display:none}
-.about-grid{grid-template-columns:1fr}
-.aboutbox h3{font-size:23px}
-.hero{left:7vw;right:7vw}
-.grid{grid-template-columns:1fr}
-.top{left:18px;right:18px}
-.bottom{left:18px;right:18px}
-.status{display:none}
-.opensource-badges{max-width:90vw}
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LogicNest · Creator Hub</title>
+  <meta name="description" content="LogicNest — developer, creator, Roblox builder, UI designer, and open-source maker.">
+  <style>
+    :root {
+      --bg: #050806;
+      --bg-soft: #080d0a;
+      --panel: rgba(11, 17, 13, .78);
+      --panel-strong: #0b110d;
+      --line: rgba(133, 255, 179, .12);
+      --line-strong: rgba(133, 255, 179, .25);
+      --text: #edf8f0;
+      --muted: #8d9c91;
+      --muted-2: #607066;
+      --mint: #8dffb5;
+      --mint-soft: rgba(141, 255, 181, .1);
+      --mint-glow: rgba(141, 255, 181, .16);
+      --danger: #ff8585;
+      --yellow: #ffe48d;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --max: 1180px;
+      --mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+      --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(circle at 50% -10%, rgba(141,255,181,.08), transparent 35%),
+        radial-gradient(circle at 0% 50%, rgba(141,255,181,.025), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: var(--sans);
+      overflow-x: hidden;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .35;
+      background-image:
+        linear-gradient(rgba(255,255,255,.015) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.015) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+      z-index: -1;
+    }
+
+    ::selection {
+      background: var(--mint);
+      color: #061008;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .container {
+      width: min(calc(100% - 40px), var(--max));
+      margin-inline: auto;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      border-bottom: 1px solid rgba(255,255,255,.045);
+      background: rgba(5,8,6,.78);
+      backdrop-filter: blur(18px);
+    }
+
+    .nav {
+      min-height: 70px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 800;
+      letter-spacing: -.03em;
+    }
+
+    .brand-mark {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-strong);
+      border-radius: 9px;
+      color: var(--mint);
+      background: var(--mint-soft);
+      font-family: var(--mono);
+      font-size: 12px;
+      box-shadow: 0 0 25px rgba(141,255,181,.06);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 8px;
+      transition: .2s ease;
+    }
+
+    .nav-links a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,.035);
+    }
+
+    .hero {
+      min-height: 650px;
+      display: grid;
+      align-items: center;
+      padding: 110px 0 80px;
+      position: relative;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap: 65px;
+      align-items: center;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      color: var(--mint);
+      font-family: var(--mono);
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 14px var(--mint);
+    }
+
+    h1 {
+      font-size: clamp(50px, 7vw, 92px);
+      line-height: .92;
+      letter-spacing: -.065em;
+      max-width: 760px;
+    }
+
+    h1 span {
+      color: var(--mint);
+    }
+
+    .hero-copy {
+      max-width: 630px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 16px;
+      line-height: 1.8;
+    }
+
+    .hero-copy strong {
+      color: var(--text);
+      font-weight: 600;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 30px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 43px;
+      padding: 0 16px;
+      border-radius: 10px;
+      border: 1px solid var(--line-strong);
+      font-size: 13px;
+      font-weight: 650;
+      transition: .2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: var(--mint);
+      color: #061009;
+      border-color: var(--mint);
+      box-shadow: 0 0 30px rgba(141,255,181,.08);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(141,255,181,.14);
+    }
+
+    .btn-ghost {
+      background: rgba(255,255,255,.02);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      background: var(--mint-soft);
+      border-color: var(--line-strong);
+    }
+
+    .hero-terminal {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: linear-gradient(145deg, rgba(15,23,18,.92), rgba(7,11,9,.92));
+      overflow: hidden;
+      box-shadow:
+        0 30px 100px rgba(0,0,0,.4),
+        0 0 60px rgba(141,255,181,.025);
+      transform: perspective(1000px) rotateY(-3deg) rotateX(2deg);
+      transition: transform .25s ease;
+    }
+
+    .terminal-head {
+      height: 43px;
+      display: flex;
+      align-items: center;
+      padding: 0 15px;
+      gap: 7px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(255,255,255,.018);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #36443a;
+    }
+
+    .terminal-title {
+      margin-left: 8px;
+      color: var(--muted-2);
+      font: 11px var(--mono);
+    }
+
+    .terminal-body {
+      padding: 22px;
+      min-height: 330px;
+      font: 12px/1.9 var(--mono);
+      color: #a8b7ac;
+    }
+
+    .terminal-line {
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .prompt {
+      color: var(--mint);
+    }
+
+    .terminal-muted {
+      color: #536259;
+    }
+
+    .terminal-accent {
+      color: var(--text);
+    }
+
+    .terminal-cursor {
+      display: inline-block;
+      width: 7px;
+      height: 13px;
+      margin-left: 2px;
+      vertical-align: -2px;
+      background: var(--mint);
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0; }
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 30px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 0 10px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: var(--muted);
+      background: rgba(255,255,255,.018);
+      font: 10px var(--mono);
+      transition: .2s ease;
+    }
+
+    .badge:hover {
+      color: var(--mint);
+      border-color: var(--line-strong);
+      background: var(--mint-soft);
+    }
+
+    section {
+      padding: 90px 0;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 30px;
+    }
+
+    .section-kicker {
+      color: var(--mint);
+      font: 10px var(--mono);
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      margin-bottom: 9px;
+    }
+
+    h2 {
+      font-size: clamp(30px, 4vw, 46px);
+      letter-spacing: -.045em;
+      line-height: 1;
+    }
+
+    .section-description {
+      max-width: 480px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .category-bar {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
+    }
+
+    .filter {
+      border: 1px solid var(--line);
+      background: transparent;
+      color: var(--muted);
+      border-radius: 9px;
+      padding: 8px 11px;
+      font: 11px var(--mono);
+      cursor: pointer;
+      transition: .2s ease;
+    }
+
+    .filter:hover,
+    .filter.active {
+      color: var(--mint);
+      border-color: var(--line-strong);
+      background: var(--mint-soft);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 13px;
+    }
+
+    .project-card {
+      position: relative;
+      min-height: 205px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background:
+        linear-gradient(145deg, rgba(255,255,255,.025), rgba(255,255,255,.008)),
+        var(--panel);
+      overflow: hidden;
+      transition: transform .2s ease, border-color .2s ease, background .2s ease;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 100% 0%, rgba(141,255,181,.08), transparent 45%);
+      pointer-events: none;
+    }
+
+    .project-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--line-strong);
+      background: rgba(13,21,16,.9);
+    }
+
+    .project-top {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .project-type {
+      color: var(--mint);
+      font: 9px var(--mono);
+      text-transform: uppercase;
+      letter-spacing: .1em;
+    }
+
+    .project-arrow {
+      color: var(--muted-2);
+      font-size: 14px;
+      transition: .2s ease;
+    }
+
+    .project-card:hover .project-arrow {
+      color: var(--mint);
+      transform: translate(2px,-2px);
+    }
+
+    .project-card h3 {
+      position: relative;
+      z-index: 1;
+      font-size: 17px;
+      letter-spacing: -.025em;
+      margin-top: 34px;
+    }
+
+    .project-card p {
+      position: relative;
+      z-index: 1;
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.65;
+    }
+
+    .project-footer {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 20px;
+      padding-top: 13px;
+      border-top: 1px solid rgba(255,255,255,.04);
+    }
+
+    .project-role {
+      color: var(--muted-2);
+      font: 9px var(--mono);
+    }
+
+    .project-link {
+      color: var(--mint);
+      font: 9px var(--mono);
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .work-card {
+      padding: 18px;
+      min-height: 150px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,.015);
+      transition: .2s ease;
+    }
+
+    .work-card:hover {
+      border-color: var(--line-strong);
+      transform: translateY(-3px);
+    }
+
+    .work-number {
+      color: var(--muted-2);
+      font: 9px var(--mono);
+    }
+
+    .work-card h3 {
+      margin-top: 28px;
+      font-size: 14px;
+    }
+
+    .work-card p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 13px;
+    }
+
+    .about-card {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 28px;
+      background: var(--panel);
+    }
+
+    .about-card h3 {
+      font-size: 19px;
+      margin-bottom: 15px;
+    }
+
+    .about-card p {
+      color: var(--muted);
+      line-height: 1.8;
+      font-size: 13px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2,1fr);
+      gap: 9px;
+      margin-top: 20px;
+    }
+
+    .stat {
+      padding: 15px;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      background: rgba(255,255,255,.015);
+    }
+
+    .stat-value {
+      color: var(--mint);
+      font: 18px var(--mono);
+    }
+
+    .stat-label {
+      margin-top: 5px;
+      color: var(--muted-2);
+      font: 9px var(--mono);
+      text-transform: uppercase;
+    }
+
+    .socials {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 22px;
+    }
+
+    .social {
+      display: inline-flex;
+      align-items: center;
+      min-height: 35px;
+      padding: 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      color: var(--muted);
+      font: 10px var(--mono);
+      transition: .2s ease;
+    }
+
+    .social:hover {
+      color: var(--mint);
+      border-color: var(--line-strong);
+      background: var(--mint-soft);
+    }
+
+    .terminal-section {
+      padding-top: 30px;
+    }
+
+    .console {
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: #060a07;
+      box-shadow: 0 25px 80px rgba(0,0,0,.3);
+    }
+
+    .console-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 43px;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .console-head span {
+      color: var(--muted-2);
+      font: 10px var(--mono);
+    }
+
+    .console-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .console-status::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--mint);
+      box-shadow: 0 0 10px var(--mint);
+    }
+
+    .console-body {
+      min-height: 230px;
+      padding: 20px;
+      font: 12px/1.9 var(--mono);
+    }
+
+    .console-input {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--text);
+      caret-color: var(--mint);
+      font: 12px var(--mono);
+    }
+
+    .console-input::placeholder {
+      color: #3f4d43;
+    }
+
+    footer {
+      padding: 45px 0 55px;
+      border-top: 1px solid rgba(255,255,255,.045);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .footer-copy {
+      color: var(--muted-2);
+      font: 10px var(--mono);
+    }
+
+    .footer-copy span {
+      color: var(--mint);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 15px;
+    }
+
+    .footer-links a {
+      color: var(--muted-2);
+      font: 10px var(--mono);
+      transition: .2s ease;
+    }
+
+    .footer-links a:hover {
+      color: var(--mint);
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 200;
+      max-width: 330px;
+      padding: 13px 15px;
+      border: 1px solid var(--line-strong);
+      border-radius: 11px;
+      background: rgba(7,12,9,.95);
+      color: var(--text);
+      font: 11px var(--mono);
+      box-shadow: 0 15px 50px rgba(0,0,0,.4);
+      transform: translateY(20px);
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s ease;
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 950px) {
+      .hero-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-terminal {
+        max-width: 700px;
+      }
+
+      .projects-grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+
+      .work-grid {
+        grid-template-columns: repeat(2,1fr);
+      }
+    }
+
+    @media (max-width: 680px) {
+      .container {
+        width: min(calc(100% - 26px), var(--max));
+      }
+
+      .nav {
+        min-height: 62px;
+      }
+
+      .nav-links {
+        display: none;
+      }
+
+      .hero {
+        padding: 75px 0 55px;
+        min-height: auto;
+      }
+
+      .hero-grid {
+        gap: 45px;
+      }
+
+      h1 {
+        font-size: clamp(46px, 15vw, 70px);
+      }
+
+      .projects-grid,
+      .work-grid,
+      .about-grid {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 65px 0;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .section-description {
+        margin-top: 15px;
+      }
+
+      .footer-inner {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<canvas id="space"></canvas>
-<div class="atmosphere"></div>
-<div class="vignette"></div>
-<div class="noise"></div>
-
-<div class="ui">
-<header class="top">
-<div class="logo">LOGIC<span>NEST</span> / CREATOR</div>
-<div class="status"><i></i><span id="systemStatus">loading...</span> · creator hub</div>
-</header>
-
-<main class="hero">
-<div class="kicker">Roblox creator · builder · scripter · designer</div>
-<h1>Build.<br><em>Create.</em><br>Explore.</h1>
-<p class="sub">A digital home for LogicNest — portfolios, open-source projects, communities, past work and everything currently being built.</p>
-
-<div class="opensource-badges">
-<a href="https://stock-viewer-x6g3.onrender.com/" target="_blank">Stock Viewer</a>
-<a href="https://pulsestockk.vercel.app/" target="_blank">Stock API</a>
-<a href="https://github.com/logicnestxvoidlure/stock-viewer" target="_blank">Stock Source</a>
-<a href="https://github.com/logicnestxvoidlure/devfolio" target="_blank">Devfolio Source</a>
-<a href="https://github.com/logicnestxvoidlure/" target="_blank">GitHub</a>
-<a href="https://voidluer.vercel.app/" target="_blank">VoidLuer</a>
-<a href="https://voidlurer.mysellauth.com/" target="_blank">Store</a>
-</div>
-
-<div class="actions">
-<button class="btn primary" onclick="openProjects()">Explore work</button>
-<button class="btn" onclick="openTerminal()">Open console</button>
-</div>
-</main>
-
-<div class="scene" id="scene">
-<div class="floor"></div>
-<div class="gridglow"></div>
-<div class="ring r1"></div>
-<div class="ring r2"></div>
-<div class="ring r3"></div>
-<div class="orb"></div>
-<div class="beam b1"></div>
-<div class="beam b2"></div>
-
-<div class="screen screen-main">
-<div class="screen-top"><span>LOGICNEST // CORE</span><span>ONLINE</span></div>
-<div class="screen-big" id="linkCount">00</div>
-<div class="screen-small">PROJECTS & LINKS</div>
-<div class="scan"></div>
-</div>
-
-<div class="card c1" onclick="openProjects()">
-<b>CREATOR HUB</b>
-<small>Projects · communities · work</small>
-<div class="line"></div>
-</div>
-
-<div class="card c2" onclick="openTerminal()">
-<b>LOGICNEST CORE</b>
-<small>Interactive console</small>
-<div class="line"></div>
-</div>
-
-<div class="portal p1" onclick="openProject('builder')"><span>BUILD</span></div>
-<div class="portal p2" onclick="openProject('scripter')"><span>SCRIPT</span></div>
-
-<div class="cube cube-a"></div>
-<div class="cube cube-b"></div>
-<div class="cube cube-c"></div>
-
-<div class="data-orbit do1"><i></i><i></i><i></i></div>
-<div class="data-orbit do2"><i></i><i></i></div>
-
-<div class="mini-label ml1">BUILD / 01</div>
-<div class="mini-label ml2">SCRIPT / 02</div>
-<div class="mini-label ml3">OPEN SOURCE</div>
-</div>
-
-<div class="bottom">
-<div class="hint">◈ neural space · move your mouse · explore the scene</div>
-<nav class="nav">
-<button onclick="openProjects()">projects</button>
-<button onclick="openTerminal()">console</button>
-<button onclick="openAbout()">about</button>
-<button onclick="toggleFullscreen()">fullscreen</button>
-</nav>
-</div>
-</div>
-
-<div class="panel" id="projectsPanel" onclick="if(event.target===this)closePanel('projectsPanel')">
-<div class="panelbox">
-<div class="panelhead">
-<h2>LogicNest · Work & Links</h2>
-<button class="close" onclick="closePanel('projectsPanel')">×</button>
-</div>
-<div class="grid" id="projectGrid"></div>
-</div>
-</div>
-
-<div class="panel" id="terminalPanel" onclick="if(event.target===this)closePanel('terminalPanel')">
-<div class="panelbox">
-<div class="panelhead">
-<h2>LogicNest Console</h2>
-<button class="close" onclick="closePanel('terminalPanel')">×</button>
-</div>
-<div class="terminal-output" id="terminalOutput">
-<div><span class="ok">LOGICNEST CORE v5.0</span></div>
-<div class="dim">Creator portfolio shell loaded.</div>
-<div>Type <span class="ok">/help</span> to see commands.</div>
-</div>
-<div class="command-line">
-<span>➜</span>
-<input id="commandInput" autocomplete="off" placeholder="enter command...">
-</div>
-</div>
-</div>
-
-<div class="panel" id="aboutPanel" onclick="if(event.target===this)closePanel('aboutPanel')">
-<div class="panelbox aboutbox">
-<div class="panelhead">
-<h2>About LogicNest</h2>
-<button class="close" onclick="closePanel('aboutPanel')">×</button>
-</div>
-
-<div class="about-grid">
-<div>
-<span class="eyebrow">CREATOR PROFILE</span>
-<h3>Builder. Scripter. Designer.</h3>
-<p>LogicNest is a Roblox-focused creator hub covering development, building, scripting, UI, 3D work and open-source software.</p>
-</div>
-
-<div class="stat">
-<strong id="aboutProjectCount">00</strong>
-<span>PROJECTS & LINKS</span>
-</div>
-
-<div class="stat">
-<strong>3D</strong>
-<span>INTERFACE</span>
-</div>
-
-<div class="stat" style="grid-column:1/-1;border-color:rgba(112,245,210,.15)">
-<strong style="font-size:18px">Roblox Communities</strong>
-
-<div class="community-links">
-<a href="https://www.roblox.com/communities/611519178/Logics-clothingg#!/about" target="_blank">Former Founder · Logic's Clothing</a>
-<a href="https://www.roblox.com/communities/5574258/Atlas-Fan-Group" target="_blank">Developer · Atlas Fan Group</a>
-<a href="https://www.roblox.com/communities/806483497/Candy-Cartel-Group#!/about" target="_blank">Developer · Candy Cartel</a>
-</div>
-
-<div style="margin-top:18px">
-<strong style="font-size:14px;color:var(--mint)">Currently Working On</strong>
-<div class="working-on">
-<span>Stock Viewer API</span>
-<span>Devfolio Builder</span>
-<span>LogicNest UI</span>
-<span>Roblox Scripting Tools</span>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-
-<script>
-const projects=[
-{id:"voidluer",name:"VoidLuer Profile",tag:"portfolio",role:"Creator",url:"https://voidluer.vercel.app/",desc:"Personal profile and creative hub."},
-{id:"builder",name:"LogicNest Builder",tag:"portfolio",role:"Builder",url:"https://logicnestbuild.vercel.app/",desc:"Roblox building portfolio featuring custom environments, architecture and immersive experiences."},
-{id:"scripter",name:"LogicNest Scripter",tag:"portfolio",role:"Scripter",url:"https://logicnesttscripter.vercel.app/",desc:"Roblox scripting portfolio covering systems, utilities, gameplay mechanics and automation."},
-{id:"clothing",name:"LogicNest Clothing",tag:"portfolio",role:"Designer",url:"https://logicnesttt.vercel.app/",desc:"Roblox clothing portfolio featuring clothing designs and collections."},
-{id:"ui",name:"LogicNest UI",tag:"portfolio",role:"UI Designer",url:"https://logicnestui.vercel.app/",desc:"User interface designs, showcases and interface experiments."},
-{id:"model",name:"LogicNest Model",tag:"portfolio",role:"3D Artist",url:"https://logicnestmodel.vercel.app/",desc:"3D modeling portfolio featuring assets, vehicles and visual work."},
-
-{id:"devfolio",name:"Devfolio Builder",tag:"opensource",role:"Developer",url:"https://github.com/logicnestxvoidlure/devfolio",desc:"Open-source portfolio builder for creators and developers."},
-{id:"stock_source",name:"Stock Viewer",tag:"opensource",role:"Developer",url:"https://github.com/logicnestxvoidlure/stock-viewer",desc:"Open-source stock tracking application and development project."},
-{id:"github",name:"LogicNest GitHub",tag:"opensource",role:"Developer",url:"https://github.com/logicnestxvoidlure/",desc:"Source code, experiments and open-source projects."},
-
-{id:"stock_live",name:"Stock Viewer Live",tag:"stock",role:"Project",url:"https://stock-viewer-x6g3.onrender.com/",desc:"Live stock tracking application."},
-{id:"stock_api",name:"Stock API Documentation",tag:"stock",role:"Developer",url:"https://pulsestockk.vercel.app/",desc:"Documentation and reference for the Stock Viewer API."},
-
-{id:"sell",name:"Sell Auth Store",tag:"tools",role:"Store",url:"https://voidlurer.mysellauth.com/",desc:"Development assets, tools and resources."},
-{id:"voidluer_site",name:"VoidLuer",tag:"tools",role:"Project",url:"https://voidluer.vercel.app/",desc:"Creative profile and project hub."},
-
-{id:"logic_clothing",name:"Logic's Clothing",tag:"community",role:"Former Founder",url:"https://www.roblox.com/communities/611519178/Logics-clothingg#!/about",desc:"Former founder of the Roblox clothing community."},
-{id:"atlas",name:"Atlas Fan Group",tag:"community",role:"Developer",url:"https://www.roblox.com/communities/5574258/Atlas-Fan-Group",desc:"Developer for Atlas."},
-{id:"candy",name:"Candy Cartel",tag:"community",role:"Developer",url:"https://www.roblox.com/communities/806483497/Candy-Cartel-Group#!/about",desc:"Developer for the Candy Cartel Roblox community."}
-];
-
-const currentWork=[
-"Stock Viewer API",
-"Devfolio Builder",
-"LogicNest UI",
-"Roblox Scripting Tools"
-];
-
-const categories=[
-["portfolio","Portfolios"],
-["opensource","Open Source"],
-["stock","Stock Viewer"],
-["tools","Tools & Stores"],
-["community","Communities"]
-];
-
-const grid=document.getElementById("projectGrid");
-
-function renderProjects(){
-let output="";
-for(const [key,title] of categories){
-const items=projects.filter(p=>p.tag===key);
-if(!items.length)continue;
-
-output+=`<div class="category-title">${title}</div>`;
-
-for(const p of items){
-output+=`
-<div class="project ${p.tag==="community"?"community":""}" onclick="openProject('${p.id}')">
-<h3>${escapeHtml(p.name)}</h3>
-<p>${escapeHtml(p.desc)}</p>
-<div class="project-meta">
-<span class="tag">${escapeHtml(p.tag)}</span>
-<span class="role">${escapeHtml(p.role)}</span>
-</div>
-</div>`;
-}
-}
-
-output+=`
-<div class="category-title">Currently Working On</div>
-<div class="project" style="grid-column:1/-1;cursor:default">
-<h3>Active Development</h3>
-<p>Projects currently being developed or improved by LogicNest.</p>
-<div class="project-meta">
-${currentWork.map(x=>`<span class="tag">${escapeHtml(x)}</span>`).join("")}
-</div>
-</div>`;
-
-grid.innerHTML=output;
-document.getElementById("linkCount").textContent=String(projects.length).padStart(2,"0");
-document.getElementById("aboutProjectCount").textContent=String(projects.length).padStart(2,"0");
-}
-
-function escapeHtml(value){
-return String(value).replace(/[&<>"']/g,char=>({
-"&":"&amp;",
-"<":"&lt;",
-">":"&gt;",
-'"':"&quot;",
-"'":"&#39;"
-}[char]));
-}
-
-function openProjects(){
-document.getElementById("projectsPanel").classList.add("open");
-}
-
-function openTerminal(){
-document.getElementById("terminalPanel").classList.add("open");
-setTimeout(()=>commandInput.focus(),80);
-}
-
-function openAbout(){
-document.getElementById("aboutPanel").classList.add("open");
-}
-
-function closePanel(id){
-document.getElementById(id).classList.remove("open");
-}
-
-function openProject(id){
-const project=projects.find(x=>x.id===id);
-if(project)window.open(project.url,"_blank");
-}
-
-function toggleFullscreen(){
-if(!document.fullscreenElement)document.documentElement.requestFullscreen?.();
-else document.exitFullscreen?.();
-}
-
-document.addEventListener("keydown",e=>{
-if(e.key==="Escape"){
-closePanel("projectsPanel");
-closePanel("terminalPanel");
-closePanel("aboutPanel");
-}
-});
-
-const output=document.getElementById("terminalOutput");
-const commandInput=document.getElementById("commandInput");
-
-function termWrite(text,cls=""){
-const div=document.createElement("div");
-if(cls)div.className=cls;
-div.innerHTML=text;
-output.appendChild(div);
-output.scrollTop=output.scrollHeight;
-}
-
-function runCommand(raw){
-const value=raw.trim();
-if(!value)return;
-
-termWrite(`<span class="dim">➜</span> ${escapeHtml(value)}`);
-
-const [command,...args]=value.split(/\s+/);
-const c=command.toLowerCase();
-
-if(c==="/help"||c==="help"){
-termWrite(`<span class="ok">Commands</span><br>/help · /projects · /open [name] · /status · /whoami · /about · /clear · /theme [mint|mono] · /github · /stock · /stockapi · /devfolio · /communities · /shop · /working`);
-}
-else if(c==="/projects"||c==="projects"){
-projects.forEach((p,i)=>termWrite(`${i+1}. <span class="ok">${escapeHtml(p.name)}</span> <span class="dim">[${escapeHtml(p.role)}]</span>`));
-}
-else if(c==="/open"||c==="open"){
-const q=args.join(" ").toLowerCase();
-const p=projects.find(x=>x.id===q||x.name.toLowerCase().includes(q));
-if(p){
-termWrite(`<span class="ok">Opening ${escapeHtml(p.name)}...</span>`);
-openProject(p.id);
-}else{
-termWrite("Project not found.","err");
-}
-}
-else if(c==="/status"||c==="status"){
-termWrite(`<span class="ok">● ALL SYSTEMS OPERATIONAL</span><br>projects & links: ${projects.length}<br>portfolios: ${projects.filter(p=>p.tag==="portfolio").length}<br>open source: ${projects.filter(p=>p.tag==="opensource").length}<br>stock projects: ${projects.filter(p=>p.tag==="stock").length}<br>communities: ${projects.filter(p=>p.tag==="community").length}<br>active work: ${currentWork.length}<br>3D engine: online<br>portfolio: deployed`);
-}
-else if(c==="/about"||c==="about"){
-openAbout();
-termWrite(`<span class="ok">Opening creator profile...</span>`);
-}
-else if(c==="/whoami"||c==="whoami"){
-termWrite(`visitor@logicnest<br><span class="dim">role:</span> guest<br><span class="dim">environment:</span> creator hub`);
-}
-else if(c==="/clear"||c==="clear"){
-output.innerHTML="";
-}
-else if(c==="/theme"){
-const theme=args[0]?.toLowerCase();
-document.documentElement.style.setProperty("--mint",theme==="mono"?"#c8d0ce":"#70f5d2");
-termWrite(`<span class="ok">Theme updated.</span>`);
-}
-else if(c==="/github"||c==="gh"){
-termWrite(`<span class="ok">Opening GitHub...</span>`);
-window.open("https://github.com/logicnestxvoidlure/","_blank");
-}
-else if(c==="/stock"){
-termWrite(`<span class="ok">Opening Stock Viewer...</span>`);
-window.open("https://stock-viewer-x6g3.onrender.com/","_blank");
-}
-else if(c==="/stockapi"){
-termWrite(`<span class="ok">Opening Stock API...</span>`);
-window.open("https://pulsestockk.vercel.app/","_blank");
-}
-else if(c==="/devfolio"){
-termWrite(`<span class="ok">Opening Devfolio...</span>`);
-window.open("https://github.com/logicnestxvoidlure/devfolio","_blank");
-}
-else if(c==="/shop"){
-termWrite(`<span class="ok">Opening store...</span>`);
-window.open("https://voidlurer.mysellauth.com/","_blank");
-}
-else if(c==="/communities"){
-termWrite(`<span class="ok">Roblox Communities</span><br>Former Founder: Logic's Clothing<br>Developer: Atlas Fan Group<br>Developer: Candy Cartel`);
-}
-else if(c==="/working"){
-termWrite(`<span class="ok">Currently Working On</span><br>${currentWork.map(x=>`• ${escapeHtml(x)}`).join("<br>")}`);
-}
-else{
-termWrite(`Unknown command: ${escapeHtml(value)} · type /help`,"err");
-}
-}
-
-commandInput.addEventListener("keydown",e=>{
-if(e.key==="Enter"){
-runCommand(commandInput.value);
-commandInput.value="";
-}
-});
-
-document.getElementById("terminalPanel").addEventListener("click",()=>{
-setTimeout(()=>commandInput.focus(),30);
-});
-
-async function updateStatus(){
-try{
-const response=await fetch("https://api.github.com/users/logicnestxvoidlure/repos");
-const repos=await response.json();
-if(Array.isArray(repos)){
-document.getElementById("systemStatus").textContent=`${repos.length} open source projects`;
-}
-}catch{
-document.getElementById("systemStatus").textContent="all systems nominal";
-}
-}
-
-renderProjects();
-updateStatus();
-
-const canvas=document.getElementById("space");
-const ctx=canvas.getContext("2d");
-
-let w,h,stars=[],dust=[],nebula=[],mouseX=.5,mouseY=.5;
-
-function resize(){
-w=innerWidth;
-h=innerHeight;
-canvas.width=w*devicePixelRatio;
-canvas.height=h*devicePixelRatio;
-canvas.style.width=w+"px";
-canvas.style.height=h+"px";
-ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);
-}
-
-function init(){
-stars=Array.from({length:260},()=>({
-x:Math.random()*w,
-y:Math.random()*h,
-z:Math.random(),
-s:Math.random()*1.7+.15,
-tw:Math.random()*Math.PI*2
-}));
-
-dust=Array.from({length:85},()=>({
-x:Math.random()*w,
-y:Math.random()*h,
-r:Math.random()*2.4+.3,
-a:Math.random()*.3+.05,
-dx:(Math.random()-.5)*.08,
-dy:(Math.random()-.5)*.08
-}));
-
-nebula=Array.from({length:9},()=>({
-x:Math.random()*w,
-y:Math.random()*h,
-r:Math.random()*260+170,
-a:Math.random()*.055+.018,
-drift:Math.random()*Math.PI*2
-}));
-}
-
-function glowDot(x,y,r,a){
-const gradient=ctx.createRadialGradient(x,y,0,x,y,r);
-gradient.addColorStop(0,`rgba(112,245,210,${a})`);
-gradient.addColorStop(.28,`rgba(62,178,160,${a*.34})`);
-gradient.addColorStop(1,"rgba(0,0,0,0)");
-ctx.fillStyle=gradient;
-ctx.beginPath();
-ctx.arc(x,y,r,0,Math.PI*2);
-ctx.fill();
-}
-
-function draw(){
-ctx.clearRect(0,0,w,h);
-
-const bg=ctx.createRadialGradient(w*.52,h*.48,0,w*.52,h*.48,Math.max(w,h)*.75);
-bg.addColorStop(0,"#0b1719");
-bg.addColorStop(.42,"#071014");
-bg.addColorStop(1,"#020406");
-ctx.fillStyle=bg;
-ctx.fillRect(0,0,w,h);
-
-for(const n of nebula){
-n.drift+=.0009;
-const px=(mouseX-.5)*18;
-const py=(mouseY-.5)*12;
-glowDot(
-n.x+Math.sin(n.drift)*18+px,
-n.y+Math.cos(n.drift*.8)*14+py,
-n.r,
-n.a
-);
-}
-
-for(const p of dust){
-p.x+=p.dx;
-p.y+=p.dy;
-
-if(p.x<0)p.x=w;
-if(p.x>w)p.x=0;
-if(p.y<0)p.y=h;
-if(p.y>h)p.y=0;
-
-ctx.fillStyle=`rgba(120,210,198,${p.a})`;
-ctx.beginPath();
-ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-ctx.fill();
-}
-
-for(const p of stars){
-p.z-=.00055;
-if(p.z<0)p.z=1;
-
-p.tw+=.025;
-
-const px=(mouseX-.5)*p.z*25;
-const py=(mouseY-.5)*p.z*18;
-
-const x=(p.x-w/2)*(1/p.z)*.035+w/2+px;
-const y=(p.y-h/2)*(1/p.z)*.035+h/2+py;
-
-const alpha=Math.max(.08,(1-p.z)*.8)*(0.72+Math.sin(p.tw)*.28);
-
-ctx.fillStyle=`rgba(190,255,244,${alpha})`;
-ctx.fillRect(x,y,p.s,p.s);
-
-if(p.z<.2){
-ctx.strokeStyle=`rgba(112,245,210,${alpha*.25})`;
-ctx.beginPath();
-ctx.moveTo(x,y);
-ctx.lineTo(
-x-(p.x-w/2)*.008,
-y-(p.y-h/2)*.008
-);
-ctx.stroke();
-}
-}
-
-const glow=ctx.createRadialGradient(w*.72,h*.67,0,w*.72,h*.67,260);
-glow.addColorStop(0,"rgba(112,245,210,.12)");
-glow.addColorStop(1,"rgba(112,245,210,0)");
-ctx.fillStyle=glow;
-ctx.fillRect(0,0,w,h);
-
-requestAnimationFrame(draw);
-}
-
-resize();
-init();
-draw();
-
-addEventListener("resize",()=>{
-resize();
-init();
-});
-
-addEventListener("mousemove",e=>{
-mouseX=e.clientX/innerWidth;
-mouseY=e.clientY/innerHeight;
-});
-
-const scene=document.getElementById("scene");
-let tx=0;
-let ty=0;
-
-addEventListener("mousemove",e=>{
-tx=(e.clientX/innerWidth-.5)*18;
-ty=(e.clientY/innerHeight-.5)*12;
-scene.style.transform=`translateY(-50%) rotateX(${-ty/3}deg) rotateY(${tx/3}deg)`;
-});
-
-document.querySelectorAll(".card,.portal,.screen").forEach(element=>{
-element.addEventListener("mousemove",e=>{
-const rect=element.getBoundingClientRect();
-const x=(e.clientX-rect.left)/rect.width-.5;
-const y=(e.clientY-rect.top)/rect.height-.5;
-
-element.style.transform=`perspective(500px) rotateX(${-y*10}deg) rotateY(${x*12}deg) translateZ(8px)`;
-});
-
-element.addEventListener("mouseleave",()=>{
-element.style.transform="";
-});
-});
-</script>
+
+  <header class="topbar">
+    <div class="container nav">
+      <a href="#" class="brand">
+        <span class="brand-mark">LN</span>
+        <span>LogicNest</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#projects">Projects</a>
+        <a href="#working">Working On</a>
+        <a href="#about">About</a>
+        <a href="#terminal">Terminal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-grid">
+
+        <div class="hero-content reveal">
+          <div class="eyebrow">Creator Hub · Online</div>
+
+          <h1>
+            Build.<br>
+            Create.<br>
+            <span>Explore.</span>
+          </h1>
+
+          <p class="hero-copy">
+            I'm <strong>LogicNest</strong> — a developer and creator building
+            digital experiences, Roblox systems, interfaces, tools, and
+            open-source projects.
+          </p>
+
+          <div class="hero-actions">
+            <a href="#projects" class="btn btn-primary">View Projects</a>
+            <a href="#terminal" class="btn btn-ghost">Open Terminal</a>
+          </div>
+
+          <div class="badges">
+            <a class="badge" href="https://stockviewer-amber.vercel.app/" target="_blank">Stock Viewer</a>
+            <a class="badge" href="https://stockviewer-amber.vercel.app/api-docs.html" target="_blank">Stock API</a>
+            <a class="badge" href="https://github.com/logicnestxvoidlure/stock-viewer" target="_blank">Stock Source</a>
+
+            <a class="badge" href="https://devfolio-builder.vercel.app/" target="_blank">Devfolio</a>
+            <a class="badge" href="https://github.com/logicnestxvoidlure/devfolio" target="_blank">Devfolio Source</a>
+            <a class="badge" href="https://devvvfolio.vercel.app/" target="_blank">Devfolio Docs</a>
+
+            <a class="badge" href="https://pulsecheck-umber.vercel.app/" target="_blank">Pulse Checker</a>
+            <a class="badge" href="https://github.com/logicnestxvoidlure/pulse-checker" target="_blank">Pulse Source</a>
+            <a class="badge" href="https://pulsecheck-umber.vercel.app/apidocs.html" target="_blank">Pulse API</a>
+
+            <a class="badge" href="https://github.com/logicnestxvoidlure" target="_blank">GitHub</a>
+            <a class="badge" href="https://discord.com/users/voidlure" target="_blank">VoidLuer</a>
+            <a class="badge" href="#projects">Store</a>
+          </div>
+        </div>
+
+        <div class="hero-terminal reveal">
+          <div class="terminal-head">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="terminal-title">logicnest@creator-hub ~</span>
+          </div>
+
+          <div class="terminal-body" id="heroTerminal">
+            <div class="terminal-line"><span class="prompt">➜</span> whoami</div>
+            <div class="terminal-line terminal-accent">logicnest</div>
+            <div class="terminal-line terminal-muted">developer · creator · builder</div>
+            <br>
+            <div class="terminal-line"><span class="prompt">➜</span> ls projects/</div>
+            <div class="terminal-line">roblox/</div>
+            <div class="terminal-line">ui-design/</div>
+            <div class="terminal-line">open-source/</div>
+            <div class="terminal-line">web-tools/</div>
+            <br>
+            <div class="terminal-line"><span class="prompt">➜</span> status</div>
+            <div class="terminal-line terminal-accent">all systems operational <span class="terminal-cursor"></span></div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PROJECTS -->
+    <section id="projects">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">01 · Projects</div>
+            <h2>Things I've built.</h2>
+          </div>
+
+          <p class="section-description">
+            A collection of development work, experiments, tools, Roblox
+            projects, and open-source software.
+          </p>
+        </div>
+
+        <div class="category-bar reveal" id="filters"></div>
+
+        <div class="projects-grid" id="projectsGrid"></div>
+
+      </div>
+    </section>
+
+    <!-- CURRENTLY WORKING ON -->
+    <section id="working">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">02 · Currently Working On</div>
+            <h2>What I'm building.</h2>
+          </div>
+
+          <p class="section-description">
+            Current projects and areas I'm actively exploring.
+          </p>
+        </div>
+
+        <div class="work-grid">
+
+          <article class="work-card reveal">
+            <div class="work-number">01</div>
+            <h3>Stock Viewer API</h3>
+            <p>
+              Building and improving a lightweight stock tracking API and
+              developer interface.
+            </p>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-number">02</div>
+            <h3>Devfolio Builder</h3>
+            <p>
+              Creating a modern portfolio builder for developers and creators.
+            </p>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-number">03</div>
+            <h3>LogicNest UI</h3>
+            <p>
+              Designing clean, futuristic interfaces and experimenting with
+              new interaction patterns.
+            </p>
+          </article>
+
+          <article class="work-card reveal">
+            <div class="work-number">04</div>
+            <h3>Roblox Scripting Tools</h3>
+            <p>
+              Building systems, utilities, UI, gameplay mechanics, and tools
+              for Roblox experiences.
+            </p>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">03 · About</div>
+            <h2>Behind LogicNest.</h2>
+          </div>
+
+          <p class="section-description">
+            A small corner of the internet for projects, experiments,
+            resources, and everything I'm building.
+          </p>
+        </div>
+
+        <div class="about-grid">
+
+          <article class="about-card reveal">
+            <h3>Developer / Creator</h3>
+
+            <p>
+              I enjoy turning ideas into actual products — from Roblox games
+              and interfaces to web applications, APIs, developer tools and
+              open-source projects.
+            </p>
+
+            <div class="stats">
+              <div class="stat">
+                <div class="stat-value" id="projectCount">00</div>
+                <div class="stat-label">Projects</div>
+              </div>
+
+              <div class="stat">
+                <div class="stat-value" id="openSourceCount">00</div>
+                <div class="stat-label">Open Source</div>
+              </div>
+            </div>
+
+            <div class="socials">
+              <a class="social" href="https://github.com/logicnestxvoidlure" target="_blank">GitHub</a>
+              <a class="social" href="https://discord.com/users/voidlure" target="_blank">Discord</a>
+            </div>
+          </article>
+
+          <article class="about-card reveal">
+            <h3>What I do</h3>
+
+            <p>
+              Roblox development, Lua scripting, UI/UX design, 3D modeling,
+              web development, API development, portfolio systems, developer
+              utilities, and experimental software.
+            </p>
+
+            <div class="badges">
+              <span class="badge">Roblox</span>
+              <span class="badge">Lua</span>
+              <span class="badge">HTML</span>
+              <span class="badge">CSS</span>
+              <span class="badge">JavaScript</span>
+              <span class="badge">UI / UX</span>
+              <span class="badge">3D</span>
+              <span class="badge">APIs</span>
+              <span class="badge">Open Source</span>
+            </div>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- TERMINAL -->
+    <section id="terminal" class="terminal-section">
+      <div class="container">
+
+        <div class="section-head reveal">
+          <div>
+            <div class="section-kicker">04 · Interactive</div>
+            <h2>LogicNest Terminal.</h2>
+          </div>
+
+          <p class="section-description">
+            Type a command below. Try <strong>/help</strong> to see what you
+            can do.
+          </p>
+        </div>
+
+        <div class="console reveal">
+          <div class="console-head">
+            <span>logicnest-terminal</span>
+            <span class="console-status">online</span>
+          </div>
+
+          <div class="console-body" id="consoleOutput">
+            <div><span class="prompt">logicnest@hub:~$</span> welcome</div>
+            <div class="terminal-muted">
+              Welcome to LogicNest. Type /help for available commands.
+            </div>
+
+            <input
+              id="consoleInput"
+              class="console-input"
+              autocomplete="off"
+              spellcheck="false"
+              placeholder="Type /help..."
+            >
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container footer-inner">
+
+      <div class="footer-copy">
+        © 2026 <span>LogicNest</span> · built with code & curiosity
+      </div>
+
+      <div class="footer-links">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="https://github.com/logicnestxvoidlure" target="_blank">GitHub</a>
+      </div>
+
+    </div>
+  </footer>
+
+  <div class="toast" id="toast"></div>
+
+  <script>
+    const projects = [
+      {
+        id: "voidluer",
+        name: "VoidLuer",
+        tag: "portfolio",
+        role: "Personal",
+        url: "https://voidluer.vercel.app/",
+        desc: "A personal creator and developer site for VoidLuer."
+      },
+
+      {
+        id: "builder",
+        name: "Roblox Builder",
+        tag: "portfolio",
+        role: "Roblox",
+        url: "#",
+        desc: "Building environments, systems and experiences inside Roblox."
+      },
+
+      {
+        id: "scripter",
+        name: "Roblox Scripter",
+        tag: "portfolio",
+        role: "Development",
+        url: "#",
+        desc: "Lua scripting, gameplay systems, automation and custom mechanics."
+      },
+
+      {
+        id: "clothing",
+        name: "Roblox Clothing",
+        tag: "portfolio",
+        role: "Design",
+        url: "#",
+        desc: "Custom Roblox clothing and visual assets."
+      },
+
+      {
+        id: "ui",
+        name: "UI Design",
+        tag: "portfolio",
+        role: "Design",
+        url: "#",
+        desc: "Futuristic interfaces, game UI and interactive experiences."
+      },
+
+      {
+        id: "model",
+        name: "3D Modeling",
+        tag: "portfolio",
+        role: "3D",
+        url: "#",
+        desc: "Game-ready models and assets built for interactive experiences."
+      },
+
+      {
+        id: "devfolio",
+        name: "Devfolio Builder",
+        tag: "opensource",
+        role: "Open Source",
+        url: "https://devfolio-builder.vercel.app/",
+        desc: "A modern portfolio builder designed for developers and creators."
+      },
+
+      {
+        id: "devfolio_docs",
+        name: "Devfolio Documentation",
+        tag: "opensource",
+        role: "Documentation",
+        url: "https://devvvfolio.vercel.app/",
+        desc: "Documentation and guides for Devfolio, the portfolio builder for developers and creators."
+      },
+
+      {
+        id: "devfolio_source",
+        name: "Devfolio Source",
+        tag: "opensource",
+        role: "GitHub",
+        url: "https://github.com/logicnestxvoidlure/devfolio",
+        desc: "The open-source codebase behind Devfolio."
+      },
+
+      {
+        id: "pulse_checker",
+        name: "Pulse Checker",
+        tag: "opensource",
+        role: "Open Source",
+        url: "https://github.com/logicnestxvoidlure/pulse-checker",
+        desc: "An open-source uptime checker for monitoring websites and services."
+      },
+
+      {
+        id: "pulse_live",
+        name: "Pulse Checker Live",
+        tag: "opensource",
+        role: "Live Product",
+        url: "https://pulsecheck-umber.vercel.app/",
+        desc: "The live Pulse Checker uptime monitoring application."
+      },
+
+      {
+        id: "pulse_api",
+        name: "Pulse Checker API Docs",
+        tag: "opensource",
+        role: "API Docs",
+        url: "https://pulsecheck-umber.vercel.app/apidocs.html",
+        desc: "API documentation and reference for the Pulse Checker uptime monitoring service."
+      },
+
+      {
+        id: "stock_source",
+        name: "Stock Viewer Source",
+        tag: "opensource",
+        role: "GitHub",
+        url: "https://github.com/logicnestxvoidlure/stock-viewer",
+        desc: "Open-source source code for the Stock Viewer project."
+      },
+
+      {
+        id: "github",
+        name: "LogicNest GitHub",
+        tag: "opensource",
+        role: "Profile",
+        url: "https://github.com/logicnestxvoidlure",
+        desc: "My collection of repositories, experiments and open-source work."
+      },
+
+      {
+        id: "stock_live",
+        name: "Stock Viewer",
+        tag: "stock",
+        role: "Web App",
+        url: "https://stockviewer-amber.vercel.app/",
+        desc: "A lightweight stock viewing and tracking web application."
+      },
+
+      {
+        id: "stock_api",
+        name: "Stock Viewer API",
+        tag: "stock",
+        role: "API",
+        url: "https://stockviewer-amber.vercel.app/api-docs.html",
+        desc: "API documentation for the Stock Viewer service."
+      },
+
+      {
+        id: "sell",
+        name: "Creator Store",
+        tag: "tools",
+        role: "Marketplace",
+        url: "#",
+        desc: "A place for sharing and selling creator-made digital work."
+      },
+
+      {
+        id: "voidluer_site",
+        name: "VoidLuer Site",
+        tag: "tools",
+        role: "Web",
+        url: "https://voidluer.vercel.app/",
+        desc: "The VoidLuer web presence and creator hub."
+      },
+
+      {
+        id: "logic_clothing",
+        name: "Logic Clothing",
+        tag: "portfolio",
+        role: "Roblox",
+        url: "#",
+        desc: "Roblox clothing concepts and visual design experiments."
+      },
+
+      {
+        id: "atlas",
+        name: "Atlas",
+        tag: "tools",
+        role: "Utility",
+        url: "#",
+        desc: "A developer-focused utility and experimentation project."
+      },
+
+      {
+        id: "candy",
+        name: "Candy",
+        tag: "portfolio",
+        role: "3D",
+        url: "#",
+        desc: "A stylized 3D asset and modeling experiment."
+      }
+    ];
+
+    const categories = [
+      ["all", "All"],
+      ["portfolio", "Portfolio"],
+      ["opensource", "Open Source"],
+      ["stock", "Stock"],
+      ["tools", "Tools"],
+      ["community", "Community"]
+    ];
+
+    const filters = document.getElementById("filters");
+    const grid = document.getElementById("projectsGrid");
+    const projectCount = document.getElementById("projectCount");
+    const openSourceCount = document.getElementById("openSourceCount");
+
+    let activeCategory = "all";
+
+    function renderFilters() {
+      filters.innerHTML = categories.map(([id, label]) => `
+        <button
+          class="filter ${id === activeCategory ? "active" : ""}"
+          data-filter="${id}"
+        >
+          ${label}
+        </button>
+      `).join("");
+
+      filters.querySelectorAll(".filter").forEach(button => {
+        button.addEventListener("click", () => {
+          activeCategory = button.dataset.filter;
+          renderFilters();
+          renderProjects();
+        });
+      });
+    }
+
+    function renderProjects() {
+      const filtered = activeCategory === "all"
+        ? projects
+        : projects.filter(project => project.tag === activeCategory);
+
+      grid.innerHTML = filtered.map(project => `
+        <a
+          class="project-card reveal visible"
+          href="${project.url}"
+          ${project.url !== "#" ? 'target="_blank" rel="noopener noreferrer"' : ""}
+          data-project="${project.id}"
+        >
+          <div>
+            <div class="project-top">
+              <span class="project-type">${project.tag}</span>
+              <span class="project-arrow">↗</span>
+            </div>
+
+            <h3>${project.name}</h3>
+
+            <p>${project.desc}</p>
+          </div>
+
+          <div class="project-footer">
+            <span class="project-role">${project.role}</span>
+            <span class="project-link">
+              ${project.url === "#" ? "soon" : "open →"}
+            </span>
+          </div>
+        </a>
+      `).join("");
+    }
+
+    function updateStats() {
+      projectCount.textContent = String(projects.length).padStart(2, "0");
+
+      openSourceCount.textContent = String(
+        projects.filter(project => project.tag === "opensource").length
+      ).padStart(2, "0");
+    }
+
+    renderFilters();
+    renderProjects();
+    updateStats();
+
+    // HERO TERMINAL
+    const heroTerminal = document.getElementById("heroTerminal");
+
+    const heroLines = [
+      '<div class="terminal-line"><span class="prompt">➜</span> neofetch</div>',
+      '<div class="terminal-line">────────────────────────────</div>',
+      '<div class="terminal-line terminal-accent">LogicNest</div>',
+      '<div class="terminal-line terminal-muted">Developer / Creator</div>',
+      '<div class="terminal-line terminal-muted">Roblox · Web · UI · Open Source</div>',
+      '<div class="terminal-line">────────────────────────────</div>',
+      '<div class="terminal-line"><span class="prompt">➜</span> echo "keep building"</div>',
+      '<div class="terminal-line terminal-accent">keep building.</div>'
+    ];
+
+    let heroIndex = 0;
+
+    function runHeroTerminal() {
+      heroTerminal.innerHTML = "";
+
+      heroLines.forEach((line, index) => {
+        setTimeout(() => {
+          heroTerminal.insertAdjacentHTML("beforeend", line);
+
+          if (index === heroLines.length - 1) {
+            heroTerminal.insertAdjacentHTML(
+              "beforeend",
+              '<div class="terminal-line"><span class="prompt">➜</span> <span class="terminal-cursor"></span></div>'
+            );
+          }
+        }, index * 150);
+      });
+    }
+
+    runHeroTerminal();
+
+    // MAIN TERMINAL
+    const consoleInput = document.getElementById("consoleInput");
+    const consoleOutput = document.getElementById("consoleOutput");
+
+    function printTerminal(text, className = "") {
+      const line = document.createElement("div");
+      line.className = className;
+      line.innerHTML = text;
+      consoleOutput.insertBefore(line, consoleInput);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(showToast.timeout);
+
+      showToast.timeout = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2600);
+    }
+
+    function openProject(query) {
+      if (!query) {
+        printTerminal(
+          '<span class="terminal-muted">Usage: /open [project]</span>'
+        );
+        return;
+      }
+
+      const normalized = query.toLowerCase().trim();
+
+      const project = projects.find(project =>
+        project.id.toLowerCase() === normalized ||
+        project.name.toLowerCase() === normalized ||
+        project.name.toLowerCase().includes(normalized)
+      );
+
+      if (!project) {
+        printTerminal(
+          `<span style="color:var(--danger)">Project not found:</span> ${query}`
+        );
+        return;
+      }
+
+      if (project.url === "#") {
+        printTerminal(
+          `<span class="terminal-accent">${project.name}</span> is currently unavailable.`
+        );
+        return;
+      }
+
+      printTerminal(
+        `<span class="terminal-accent">Opening ${project.name}...</span>`
+      );
+
+      window.open(project.url, "_blank", "noopener,noreferrer");
+    }
+
+    function terminalCommand(raw) {
+      const input = raw.trim();
+
+      if (!input) return;
+
+      printTerminal(
+        `<span class="prompt">logicnest@hub:~$</span> ${input}`
+      );
+
+      const parts = input.split(" ");
+      const command = parts[0].toLowerCase();
+      const args = parts.slice(1).join(" ");
+
+      switch (command) {
+
+        case "/help":
+        case "help":
+          printTerminal(`
+            <span class="terminal-accent">Available commands</span><br>
+            /help — show commands<br>
+            /projects — show project count<br>
+            /open [name] — open a project<br>
+            /status — show system status<br>
+            /whoami — identify LogicNest<br>
+            /about — about LogicNest<br>
+            /github — open GitHub<br>
+            /stock — open Stock Viewer<br>
+            /stockapi — open Stock Viewer API<br>
+            /devfolio — open Devfolio<br>
+            /devfolio-docs — open Devfolio Documentation<br>
+            /pulse — open Pulse Checker<br>
+            /pulsesource — open Pulse Checker source<br>
+            /pulseapi — open Pulse Checker API Docs<br>
+            /communities — community links<br>
+            /shop — creator store<br>
+            /working — current projects<br>
+            /clear — clear terminal
+          `);
+          break;
+
+        case "/projects":
+          printTerminal(
+            `<span class="terminal-accent">${projects.length}</span> projects indexed.`
+          );
+          break;
+
+        case "/open":
+          openProject(args);
+          break;
+
+        case "/status":
+          printTerminal(`
+            <span class="terminal-accent">SYSTEM STATUS</span><br>
+            ───────────────────────────<br>
+            core .............. <span style="color:var(--mint)">ONLINE</span><br>
+            projects .......... <span style="color:var(--mint)">ONLINE</span><br>
+            open source ....... <span style="color:var(--mint)">ACTIVE</span><br>
+            APIs .............. <span style="color:var(--mint)">ONLINE</span><br>
+            pulse checker ..... <span style="color:var(--mint)">ONLINE</span><br>
+            devfolio .......... <span style="color:var(--mint)">ONLINE</span>
+          `);
+          break;
+
+        case "/whoami":
+          printTerminal(`
+            <span class="terminal-accent">logicnest</span><br>
+            developer · creator · Roblox builder · UI designer
+          `);
+          break;
+
+        case "/about":
+          printTerminal(`
+            <span class="terminal-accent">LogicNest</span> is a creator hub
+            for development projects, experiments, tools and open-source work.
+          `);
+          break;
+
+        case "/github":
+          window.open(
+            "https://github.com/logicnestxvoidlure",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening GitHub...");
+          break;
+
+        case "/stock":
+          window.open(
+            "https://stockviewer-amber.vercel.app/",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Stock Viewer...");
+          break;
+
+        case "/stockapi":
+          window.open(
+            "https://stockviewer-amber.vercel.app/api-docs.html",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Stock Viewer API Docs...");
+          break;
+
+        case "/devfolio":
+          window.open(
+            "https://devfolio-builder.vercel.app/",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Devfolio...");
+          break;
+
+        case "/devfolio-docs":
+          window.open(
+            "https://devvvfolio.vercel.app/",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Devfolio Documentation...");
+          break;
+
+        case "/pulse":
+        case "/pulsechecker":
+          window.open(
+            "https://pulsecheck-umber.vercel.app/",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Pulse Checker...");
+          break;
+
+        case "/pulsesource":
+        case "/pulse-source":
+          window.open(
+            "https://github.com/logicnestxvoidlure/pulse-checker",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Pulse Checker source...");
+          break;
+
+        case "/pulseapi":
+        case "/pulse-api":
+          window.open(
+            "https://pulsecheck-umber.vercel.app/apidocs.html",
+            "_blank",
+            "noopener,noreferrer"
+          );
+          printTerminal("Opening Pulse Checker API Docs...");
+          break;
+
+        case "/communities":
+          printTerminal(`
+            <span class="terminal-accent">COMMUNITIES</span><br>
+            Discord — VoidLuer<br>
+            GitHub — LogicNest
+          `);
+          break;
+
+        case "/shop":
+          printTerminal(
+            "Creator store is currently being prepared."
+          );
+          break;
+
+        case "/working":
+          printTerminal(`
+            <span class="terminal-accent">CURRENTLY WORKING ON</span><br>
+            01 · Stock Viewer API<br>
+            02 · Devfolio Builder<br>
+            03 · LogicNest UI<br>
+            04 · Roblox Scripting Tools
+          `);
+          break;
+
+        case "/theme":
+          if (args === "mono") {
+            document.documentElement.style.setProperty("--mint", "#ffffff");
+            document.documentElement.style.setProperty("--mint-soft", "rgba(255,255,255,.08)");
+            document.documentElement.style.setProperty("--mint-glow", "rgba(255,255,255,.12)");
+            showToast("Theme switched to mono.");
+            printTerminal("Theme → mono");
+          } else {
+            document.documentElement.style.setProperty("--mint", "#8dffb5");
+            document.documentElement.style.setProperty("--mint-soft", "rgba(141,255,181,.1)");
+            document.documentElement.style.setProperty("--mint-glow", "rgba(141,255,181,.16)");
+            showToast("Theme switched to mint.");
+            printTerminal("Theme → mint");
+          }
+          break;
+
+        case "/clear":
+        case "clear":
+          [...consoleOutput.children].forEach(child => {
+            if (child !== consoleInput) {
+              child.remove();
+            }
+          });
+          break;
+
+        default:
+          printTerminal(
+            `<span style="color:var(--danger)">command not found:</span> ${command}`
+          );
+          printTerminal(
+            '<span class="terminal-muted">Type /help for available commands.</span>'
+          );
+      }
+
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+      consoleInput.value = "";
+    }
+
+    consoleInput.addEventListener("keydown", event => {
+      if (event.key === "Enter") {
+        terminalCommand(consoleInput.value);
+      }
+    });
+
+    // Scroll reveal
+    const revealObserver = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("visible");
+            revealObserver.unobserve(entry.target);
+          }
+        });
+      },
+      {
+        threshold: .08
+      }
+    );
+
+    document.querySelectorAll(".reveal").forEach(element => {
+      revealObserver.observe(element);
+    });
+
+    // Hero terminal tilt
+    const terminal = document.querySelector(".hero-terminal");
+
+    document.addEventListener("mousemove", event => {
+      if (window.innerWidth < 950) return;
+
+      const x = (event.clientX / window.innerWidth - .5);
+      const y = (event.clientY / window.innerHeight - .5);
+
+      terminal.style.transform = `
+        perspective(1000px)
+        rotateY(${x * -5 - 3}deg)
+        rotateX(${y * 4 + 2}deg)
+      `;
+    });
+
+    // Keyboard shortcut
+    document.addEventListener("keydown", event => {
+      if (
+        event.key === "/" &&
+        document.activeElement !== consoleInput &&
+        document.activeElement.tagName !== "INPUT" &&
+        document.activeElement.tagName !== "TEXTAREA"
+      ) {
+        event.preventDefault();
+        consoleInput.focus();
+      }
+    });
+
+    // GitHub repository count
+    async function updateGitHubCount() {
+      try {
+        const response = await fetch(
+          "https://api.github.com/users/logicnestxvoidlure/repos?per_page=100"
+        );
+
+        if (!response.ok) return;
+
+        const repos = await response.json();
+
+        const repoCount = repos.length;
+
+        if (repoCount > 0) {
+          const githubBadge = [...document.querySelectorAll(".badge")]
+            .find(element => element.textContent.trim() === "GitHub");
+
+          if (githubBadge) {
+            githubBadge.textContent = `GitHub · ${repoCount} repos`;
+          }
+        }
+      } catch {
+        // GitHub API unavailable — silently ignore.
+      }
+    }
+
+    updateGitHubCount();
+  </script>
 
 </body>
 </html>
