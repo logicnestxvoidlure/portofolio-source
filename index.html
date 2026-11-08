@@ -3,60 +3,44 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Random Website</title>
+  <title>Broken Website</title>
   <style>
     body {
-      margin: 0;
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: #080808;
+      background: #080808
       color: white;
-      font-family: Arial, sans-serif;
+      font-family Arial;
+      display: flex;
+      justify-content: center;
     }
 
     .card {
-      text-align: center;
       padding: 40px;
-      border: 1px solid #333;
-      border-radius: 16px;
       background: #111;
-    }
-
-    h1 {
-      font-size: 42px;
+      border-radius: invalid;
     }
 
     button {
-      padding: 15px 35px;
       background: #fff;
       color: #000;
-      border: none;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      transform: scale(1.1);
-      box-shadow: 0 0 30px #fff;
+      padding: 15px;
+      transform: scale(broken);
     }
   </style>
 </head>
 <body>
   <div class="card">
-    <h1>Hello, World!</h1>
-    <p>Welcome to my random website.</p>
-    <button onclick="changeText()">Click Me</button>
+    <h1>Hello World
+    <p>Welcome to my broken website
+    <button onclick="changeText()">Click Me
   </div>
 
   <script>
     function changeText() {
-      document.querySelector("h1").innerText =
-        "You clicked the button!";
+      document.querySelector("#missing").innerText =
+        undefinedVariable;
     }
+
+    changeText()
   </script>
 </body>
 </html>
